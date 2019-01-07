@@ -8,7 +8,7 @@ Indicators of Compromise (IoC) will be used in Graylog lookup tables to enrich m
 
 Deduped/Enriched IoCs will be injected to Graylog. If you don't wish this feature, you can disable last line in parseTI.py
 
-Overlap Test: This will compare the IoC with different threat Intel feeds and gives a count. Bigger the count, IoC is more trustable.
+**Overlap Test:** This will compare the IoC with different threat Intel feeds and gives a count. Bigger the count, IoC is more trustable.
 
 ### Use Cases
 * IoC lookup in historical graylog data to check for suspicious traces in the network
@@ -17,7 +17,7 @@ Overlap Test: This will compare the IoC with different threat Intel feeds and gi
 * Compliments Threat hunting
 
 
-### Pre-requisites:
+### Prerequisites
 
 * Access to Graylog GUI
 * Critical Stack Intel installation. 
@@ -27,14 +27,14 @@ Overlap Test: This will compare the IoC with different threat Intel feeds and gi
 * Input appropriate values in *config.jsom*
 
 
-### Directories Used:
+### Directories Used
 
 * Critical Stack Intel stores the raw TI data here:	/opt/critical-stack/frameworks/intel/.cache/
 * All the Output files resides here: /opt/critical-stack/frameworks/intel/temp/
 * Currently contributing feed names are stored here: /opt/critical-stack/frameworks/intel/temp/new_feeds.txt
 
 
-### Usage:
+### Usage
 **Manual**
 ```sh
 python ti_rest.py
