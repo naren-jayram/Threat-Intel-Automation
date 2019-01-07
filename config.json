@@ -1,0 +1,7 @@
+{
+    "Note" : "1. Graylog Host Name; 2. FEED_DIRECTORY- critical-stack's master repo; 3. TEMP_DIRECTORY- computation happens here 4. IOC_RETENTION_DAYS for cleaning up IoC data",		    											    
+    "GRAYLOG_HOST":" ", 
+    "FEED_DIRECTORY": "/opt/critical-stack/frameworks/intel/.cache/",
+    "TEMP_DIRECTORY": "/opt/critical-stack/frameworks/intel/temp/",			            
+    "IOC_RETENTION_DAYS": "10"   
+}

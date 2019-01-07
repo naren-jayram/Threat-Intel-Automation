@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn instance to serve ti_rest.py to facilitate Graylog lookups
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/scripts/ThreatIntel
+ExecStart=/usr/bin/gunicorn --workers 10 --bind localhost:8000 --chdir /opt/scripts/ThreatIntel ti_rest -m 0007 --timeout 300 --preload --max-requests 1000 --max-requests-jitter 20
+Restart=on-failure
+RestartSec=3
+
+# Connects standard error to journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

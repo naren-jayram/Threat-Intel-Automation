@@ -1,0 +1,80 @@
+Pipeline !Threat Intel - Multi Value Lookup
+
+Stage 0:
+
+rule "!Threat Intel - Multi Value Lookup on Source"
+
+when
+	((in_private_net(to_string($message.src)) == false) && (to_string($message.src)!="N/A") && !(cidr_match("<your_organization_subnet>", to_ip($message.src))))
+then
+  let source = to_string($message.src);
+  // Lookup the multi value in the TI_Multi_Value_Lookup_Table lookup table
+  let tiData = lookup("jsonlookup", source);
+  set_field("ti_feed_overlap_count", tiData["feed_overlap_count"]);
+  set_field("ti_feed_name", tiData["feed_name"]);
+  set_field("ti_ioc_feed_date", tiData["date"]);
+  set_field("ti_ioc_src", tiData["ioc"]);
+end
+
+
+rule "!Threat Intel - Multi Value Lookup on Destination"  
+
+when
+	((in_private_net(to_string($message.dst)) == false) && (to_string($message.dst)!="N/A") && !(cidr_match("<your_organization_subnet>", to_ip($message.dst))))
+then
+  let dest = to_string($message.dst);
+  // Lookup the multi value in the TI_Multi_Value_Lookup_Table lookup table
+  let tiData = lookup("jsonlookup", dest);  
+  set_field("ti_feed_overlap_count", tiData["feed_overlap_count"]);
+  set_field("ti_feed_name", tiData["feed_name"]);
+  set_field("ti_ioc_feed_date", tiData["date"]);
+  set_field("ti_ioc_dst", tiData["ioc"]);
+end
+
+
+rule "!Threat Intel - Multi Value Lookup on Request"
+when 
+    (has_field("request") && (to_string($message.request) != "") && (to_string($message.request)!="N/A"))
+    
+then
+  let req = to_string($message.request);
+  // Lookup the multi value in the TI_Multi_Value_Lookup_Table lookup table
+  let tiData = lookup("TI_Multi_Value_Lookup_Table_URL", req);
+   
+  set_field("ti_feed_overlap_count", tiData["feed_overlap_count"]);
+  set_field("ti_feed_name", tiData["feed_name"]);
+  set_field("ti_ioc_feed_date", tiData["date"]);
+  set_field("ti_ioc_req", tiData["ioc"]);
+end
+
+============================================================================================================================================================================
+Stage 1
+
+rule "!Threat Intel Inflate on Source - Multivalue Lookup Table"
+when 
+    has_field("ti_ioc_src")
+then
+	remove_field("ti_ioc_src") ;
+	set_field("ti_lookup_src", true);
+	set_field("ti_feed_overlap_count_description", "No. of TI feeds giving the same IoC. Bigger the number, bigger the trust!");
+end
+
+
+rule "!Threat Intel Inflate on Destination - Multivalue Lookup Table"
+when 
+    has_field("ti_ioc_dst")
+then
+	remove_field("ti_ioc_dst") ;
+	set_field("ti_lookup_dst", true);
+	set_field("ti_feed_overlap_count_description", "No. of TI feeds giving the same IoC. Bigger the number, bigger the trust!");
+end
+
+
+rule "!Threat Intel Inflate on Request - Multivalue Lookup Table"
+when 
+    has_field("ti_ioc_req")
+then
+	remove_field("ti_ioc_req") ;
+	set_field("ti_lookup_req", true);
+	set_field("ti_feed_overlap_count_description", "No. of TI feeds giving the same IoC. Bigger the number, bigger the trust!");
+end
